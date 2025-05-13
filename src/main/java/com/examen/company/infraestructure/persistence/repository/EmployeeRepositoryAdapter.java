@@ -50,6 +50,8 @@ public class EmployeeRepositoryAdapter implements EmployeeRepository {
             log.info("Deleting employee with id {}", id);
             this.getEmployeeId(id);
             employeeRepositoryJPA.deleteById(id);
+        } catch (CompanyException e) {
+            throw e;
         } catch (Exception e) {
             throw new CompanyException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNAL_SERVER_ERROR.getCode(), ErrorCodes.INTERNAL_SERVER_ERROR.getMessage() + " Error deleting employee with id " + id);
         }
