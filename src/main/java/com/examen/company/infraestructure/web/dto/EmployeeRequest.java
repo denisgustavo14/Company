@@ -3,8 +3,7 @@ package com.examen.company.infraestructure.web.dto;
 import com.examen.company.domain.valueobject.Gender;
 import com.examen.company.shared.validator.IValidEmployee;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,6 +24,7 @@ public class EmployeeRequest {
 
     private String motherLastName;
 
+    @NotNull
     private int age;
 
     private Gender gender;

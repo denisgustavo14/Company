@@ -17,7 +17,7 @@ public class EmployeeServiceImpl implements EmployeePort {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public EmployeeResponse getEmployeeById(Long id) {
+    public EmployeeResponse getEmployeeById(final Long id) {
         return employeeRepository.getEmployeeId(id);
     }
 
@@ -27,17 +27,17 @@ public class EmployeeServiceImpl implements EmployeePort {
     }
 
     @Override
-    public void deleteEmployeeById(Long id) {
+    public void deleteEmployeeById(final Long id) {
         employeeRepository.deleteEmployeeById(id);
     }
 
     @Override
-    public EmployeeResponse partialUpdateEmp(Long id, Map<String, Object> updates) {
+    public EmployeeResponse partialUpdateEmp(final Long id, final Map<String, Object> updates) {
        return employeeRepository.partialUpdate(id, updates);
     }
 
     @Override
-    public EmployeeResponse createEmployee(EmployeeRequest employee) {
+    public EmployeeResponse createEmployee(final EmployeeRequest employee) {
         return employeeRepository.createEmployee(employee);
     }
 

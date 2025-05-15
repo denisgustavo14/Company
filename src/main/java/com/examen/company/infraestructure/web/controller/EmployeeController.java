@@ -1,11 +1,13 @@
 package com.examen.company.infraestructure.web.controller;
 
 import com.examen.company.application.port.in.EmployeePort;
+import com.examen.company.infraestructure.aop.Timed;
 import com.examen.company.infraestructure.web.dto.DeleteResponse;
 import com.examen.company.infraestructure.web.dto.EmployeeRequest;
 import com.examen.company.infraestructure.web.dto.EmployeeResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,10 +37,12 @@ public class EmployeeController {
     }
 
     @PatchMapping("/{idEmployee}")
-    public EmployeeResponse updateEmployeeById(@PathVariable final Long idEmployee, final @RequestBody Map<String, Object> updates) {
+    public EmployeeResponse updateEmployeeById(@PathVariable final Long idEmployee, @RequestBody final Map<String, Object> updates) {
         return employeePort.partialUpdateEmp(idEmployee, updates);
     }
 
+    @Timed
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createEmployee")
     public EmployeeResponse createEmployee(@Valid @RequestBody final EmployeeRequest employee) {
         return employeePort.createEmployee(employee);

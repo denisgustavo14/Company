@@ -8,11 +8,11 @@ public class CompanyException extends RuntimeException {
 
     private final HttpStatus httpStatus;
 
-    private final String ErrorCode;
+    private final String errorCode;
 
-    public CompanyException(final HttpStatus httpStatus,  final String ErrorCode, final String message) {
+    public CompanyException(final HttpStatus httpStatus,  final String errorCode, final String message) {
         super(message);
         this.httpStatus = httpStatus;
-        this.ErrorCode = ErrorCode;
+        this.errorCode = errorCode;
     }
 }

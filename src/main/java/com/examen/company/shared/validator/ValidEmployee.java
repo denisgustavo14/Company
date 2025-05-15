@@ -15,6 +15,10 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
     public boolean isValid(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
         log.info("Validating employee {}", employeeRequest);
 
+         if (!isNull(employeeRequest, context)) {
+             return false;
+         }
+
         boolean valid = validateData(employeeRequest, context);
 
         if (!dateAndAge(employeeRequest, context)) {
@@ -29,7 +33,7 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
         context.buildConstraintViolationWithTemplate(message).addPropertyNode(" ").addConstraintViolation();
     }
 
-    private boolean validateData(final EmployeeRequest employeeRequest, ConstraintValidatorContext context) {
+    private boolean validateData(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
         String pattern = "^[A-Za-z]+$";
         boolean valid = true;
 
@@ -56,7 +60,7 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
         return valid;
     }
 
-    private boolean dateAndAge(EmployeeRequest employeeRequest, ConstraintValidatorContext context) {
+    private boolean dateAndAge(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
         LocalDate birthdate = employeeRequest.getBirthdate();
         int age = employeeRequest.getAge();
 
@@ -72,6 +76,40 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
 
         if (calculateAge != age) {
             getContext(context, "age");
+            valid = false;
+        }
+        return valid;
+    }
+
+    private boolean isNull(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
+        boolean valid = true;
+        if (employeeRequest.getFirstName() == null) {
+            getContext(context, "firstName");
+            valid = false;
+        }
+
+        if (employeeRequest.getMidName() == null) {
+            getContext(context, "midName");
+            valid = false;
+        }
+
+        if (employeeRequest.getFatherLastName() == null) {
+            getContext(context, "fatherLastName");
+            valid = false;
+        }
+
+        if (employeeRequest.getMotherLastName() == null) {
+            getContext(context, "motherLastName");
+            valid = false;
+        }
+
+        if (employeeRequest.getGender() == null) {
+            getContext(context, "gender");
+            valid = false;
+        }
+
+        if (employeeRequest.getPosition() == null) {
+            getContext(context, "position");
             valid = false;
         }
         return valid;

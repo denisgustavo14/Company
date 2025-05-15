@@ -40,6 +40,7 @@ public class EmployeeRepositoryAdapter implements EmployeeRepository {
             log.info("Getting all employees");
             return employeeMapper.toEmployeeResponseList(employeeRepositoryJPA.findAll());
         } catch (Exception e) {
+            log.error("Error getting all employees ", e);
             throw new CompanyException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNAL_SERVER_ERROR.getCode(), ErrorCodes.INTERNAL_SERVER_ERROR.getMessage());
         }
     }
@@ -53,6 +54,7 @@ public class EmployeeRepositoryAdapter implements EmployeeRepository {
         } catch (CompanyException e) {
             throw e;
         } catch (Exception e) {
+            log.error("Error deleting employee with id {}", id, e);
             throw new CompanyException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNAL_SERVER_ERROR.getCode(), ErrorCodes.INTERNAL_SERVER_ERROR.getMessage() + " Error deleting employee with id " + id);
         }
     }

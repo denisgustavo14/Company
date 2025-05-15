@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ValidatorTest {
+class ValidEmployeeTest {
 
     private ValidEmployee validator;
     private ConstraintValidatorContext context;
@@ -54,10 +54,10 @@ class ValidatorTest {
     @Test
     void testInvalidNames() {
         EmployeeRequest employee = new EmployeeRequest(
-                "Juan123", // inválido
-                "Carlos",  // válido
-                "Perez",   // válido
-                "Gomez",   // válido
+                "Juan123",
+                "Carlos",
+                "Perez",
+                "Gomez",
                 30,
                 Gender.MALE,
                 LocalDate.now().minusYears(30),
@@ -106,7 +106,7 @@ class ValidatorTest {
                 "Maria",
                 "Lopez",
                 "Fernandez",
-                20, // edad incorrecta
+                20,
                 Gender.FEMALE,
                 LocalDate.now().minusYears(25),
                 "Developer"
