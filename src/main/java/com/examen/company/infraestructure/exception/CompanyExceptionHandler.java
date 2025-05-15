@@ -1,6 +1,8 @@
 package com.examen.company.infraestructure.exception;
 
 import com.examen.company.infraestructure.web.dto.CompanyError;
+import com.examen.company.infraestructure.web.dto.FieldErrorDetail;
+import com.examen.company.infraestructure.web.dto.RequestFieldError;
 import com.examen.company.shared.enums.ErrorCodes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,19 +26,18 @@ public class CompanyExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<CompanyError> errorArgument(MethodArgumentNotValidException e) {
-        List<String> errors = e.getBindingResult()
+    public ResponseEntity<RequestFieldError> errorArgument(MethodArgumentNotValidException e) {
+        List<FieldErrorDetail> errors = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(FieldError::getDefaultMessage)
+                .map(error -> new FieldErrorDetail(error.getField(), error.getDefaultMessage()))
                 .toList();
 
-        String errorMessage = "The attribute format is incorrect: " + String.join(", ", errors);
-
-        CompanyError error = new CompanyError();
-        error.setErrorCode(ErrorCodes.BAD_REQUEST.getCode());
-        error.setMessage(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        RequestFieldError requestFieldError = new RequestFieldError();
+        requestFieldError.setErrorCode(ErrorCodes.BAD_REQUEST.getCode());
+        requestFieldError.setMessage("Incorrect attribute format.");
+        requestFieldError.setFieldErrors(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(requestFieldError);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

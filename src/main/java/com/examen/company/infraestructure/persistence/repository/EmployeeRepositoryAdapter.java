@@ -7,6 +7,7 @@ import com.examen.company.infraestructure.exception.CompanyException;
 import com.examen.company.infraestructure.persistence.mapper.EmployeeMapper;
 import com.examen.company.infraestructure.web.dto.EmployeeRequest;
 import com.examen.company.infraestructure.web.dto.EmployeeResponse;
+import com.examen.company.shared.constants.FieldsRequest;
 import com.examen.company.shared.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,14 +84,14 @@ public class EmployeeRepositoryAdapter implements EmployeeRepository {
     private void applyUpdate(final Employee employee, final String key, final Object value) {
         log.debug("Updating employee with id {} with key {} and value {}", employee.getId(), key, value);
         switch (key) {
-            case "firstName" -> employee.setFirstName((String) value);
-            case "midName" -> employee.setMidName((String) value);
-            case "fatherLastName" -> employee.setFatherLastName((String) value);
-            case "motherLastName" -> employee.setMotherLastName((String) value);
-            case "age" -> employee.setAge((Integer) value);
-            case "gender" -> employee.setGender(Gender.valueOf((String) value));
-            case "birthdate" -> employee.setBirthdate((LocalDate) value);
-            case "position" -> employee.setPosition((String) value);
+            case FieldsRequest.FIRST_NAME -> employee.setFirstName((String) value);
+            case FieldsRequest.MID_NAME -> employee.setMidName((String) value);
+            case FieldsRequest.FATHER_LAST_NAME -> employee.setFatherLastName((String) value);
+            case FieldsRequest.MOTHER_LAST_NAME -> employee.setMotherLastName((String) value);
+            case FieldsRequest.AGE -> employee.setAge((Integer) value);
+            case FieldsRequest.GENDER -> employee.setGender(Gender.valueOf((String) value));
+            case FieldsRequest.BIRTHDATE -> employee.setBirthdate((LocalDate) value);
+            case FieldsRequest.POSITION -> employee.setPosition((String) value);
             default -> throw new CompanyException(HttpStatus.BAD_REQUEST, ErrorCodes.BAD_REQUEST.getCode(), ErrorCodes.BAD_REQUEST.getMessage() + " Invalid key " + key);
         }
     }

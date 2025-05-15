@@ -1,25 +1,34 @@
 package com.examen.company.shared.validator;
 
 import com.examen.company.infraestructure.web.dto.EmployeeRequest;
+import com.examen.company.shared.constants.FieldsRequest;
+import com.examen.company.shared.constants.ValidationsMessages;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Locale;
 
 @Slf4j
+@AllArgsConstructor
 public class ValidEmployee implements ConstraintValidator<IValidEmployee, EmployeeRequest> {
+
+    private MessageSource messageSource;
+
+    private static final String PATTERN = "^[A-Za-z]+$";
 
     @Override
     public boolean isValid(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
-        log.info("Validating employee {}", employeeRequest);
+        log.info("Validating employee");
+        boolean valid = validOne(employeeRequest, context);
 
-         if (!isNull(employeeRequest, context)) {
-             return false;
-         }
-
-        boolean valid = validateData(employeeRequest, context);
+        if (!validTwo(employeeRequest, context)) {
+            valid = false;
+        }
 
         if (!dateAndAge(employeeRequest, context)) {
             valid = false;
@@ -28,46 +37,19 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
         return valid;
     }
 
-    private void getContext(final ConstraintValidatorContext context, final String message) {
+    private void getContext(final ConstraintValidatorContext context, final String field, final String message) {
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(message).addPropertyNode(" ").addConstraintViolation();
-    }
-
-    private boolean validateData(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
-        String pattern = "^[A-Za-z]+$";
-        boolean valid = true;
-
-        if (!employeeRequest.getFirstName().matches(pattern)) {
-            getContext(context, "firsName");
-            valid = false;
-        }
-        if (!employeeRequest.getMidName().matches(pattern)) {
-            getContext(context, "midName");
-            valid = false;
-        }
-        if (!employeeRequest.getFatherLastName().matches(pattern)) {
-            getContext(context, "fathersLastName");
-            valid = false;
-        }
-        if (!employeeRequest.getMotherLastName().matches(pattern)) {
-            getContext(context, "mothersLastName");
-            valid = false;
-        }
-        if (!employeeRequest.getPosition().matches("^[A-Za-z ]+$")) {
-            valid = false;
-        }
-
-        return valid;
+        String sourceMessage = messageSource.getMessage(message, null, Locale.getDefault());
+        context.buildConstraintViolationWithTemplate(sourceMessage).addPropertyNode(field).addConstraintViolation();
     }
 
     private boolean dateAndAge(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
         LocalDate birthdate = employeeRequest.getBirthdate();
         int age = employeeRequest.getAge();
-
         boolean valid = true;
 
         if (birthdate == null) {
-            getContext(context, "birthdate");
+            getContext(context, FieldsRequest.BIRTHDATE, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
             return false;
         }
 
@@ -75,43 +57,68 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
         int calculateAge = Period.between(birthdate, now).getYears();
 
         if (calculateAge != age) {
-            getContext(context, "age");
+            getContext(context, FieldsRequest.AGE, ValidationsMessages.EMPLOYEE_INVALID_AGE_REQUEST);
             valid = false;
         }
         return valid;
     }
 
-    private boolean isNull(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
+
+    private boolean validOne(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
         boolean valid = true;
+
         if (employeeRequest.getFirstName() == null) {
-            getContext(context, "firstName");
+            getContext(context, FieldsRequest.FIRST_NAME, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
+            valid = false;
+        } else if (!employeeRequest.getFirstName().matches(PATTERN)) {
+            getContext(context, FieldsRequest.FIRST_NAME, ValidationsMessages.EMPLOYEE_BAD_REQUEST);
             valid = false;
         }
 
         if (employeeRequest.getMidName() == null) {
-            getContext(context, "midName");
+            getContext(context, FieldsRequest.MID_NAME, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
+            valid = false;
+        } else if (!employeeRequest.getMidName().matches(PATTERN)) {
+            getContext(context, FieldsRequest.MID_NAME, ValidationsMessages.EMPLOYEE_BAD_REQUEST);
             valid = false;
         }
 
         if (employeeRequest.getFatherLastName() == null) {
-            getContext(context, "fatherLastName");
+            getContext(context, FieldsRequest.FATHER_LAST_NAME, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
             valid = false;
+        } else if (!employeeRequest.getFatherLastName().matches(PATTERN)) {
+            getContext(context, FieldsRequest.FATHER_LAST_NAME, ValidationsMessages.EMPLOYEE_BAD_REQUEST);
         }
 
+        return valid;
+    }
+
+    private boolean validTwo(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
+        boolean valid = true;
+
         if (employeeRequest.getMotherLastName() == null) {
-            getContext(context, "motherLastName");
+            getContext(context, FieldsRequest.MOTHER_LAST_NAME, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
+            valid = false;
+        } else if (!employeeRequest.getMotherLastName().matches(PATTERN)) {
+            getContext(context, FieldsRequest.MOTHER_LAST_NAME, ValidationsMessages.EMPLOYEE_BAD_REQUEST);
             valid = false;
         }
 
         if (employeeRequest.getGender() == null) {
-            getContext(context, "gender");
+            getContext(context, FieldsRequest.GENDER, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
             valid = false;
+        } else if (!employeeRequest.getGender().getValue().matches(PATTERN)) {
+            getContext(context, FieldsRequest.GENDER, ValidationsMessages.EMPLOYEE_BAD_REQUEST);
         }
 
         if (employeeRequest.getPosition() == null) {
-            getContext(context, "position");
+            getContext(context, FieldsRequest.POSITION, ValidationsMessages.EMPLOYEE_NULL_REQUEST);
+            valid = false;
+        } else if (!employeeRequest.getPosition().matches("^[A-Za-z ]+$")) {
+            getContext(context, FieldsRequest.POSITION, ValidationsMessages.EMPLOYEE_BAD_REQUEST);
             valid = false;
         }
+
         return valid;
     }
 }
