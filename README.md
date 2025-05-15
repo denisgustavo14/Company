@@ -1,6 +1,6 @@
 # 🏢 Company API
 
-Este proyecto es una API REST construida con Java y Spring Boot que gestiona empleados. Sigue una arquitectura limpia (hexagonal) y aplica principios SOLID, validaciones personalizadas y manejo centralizado de errores.
+Este proyecto es una API REST construida con Java y Spring Boot que gestiona empleados. Sigue una arquitectura limpia (hexagonal) y aplica principios SOLID, AOP, validaciones personalizadas y manejo centralizado de errores.
 
 ## 📦 Funcionalidades
 
