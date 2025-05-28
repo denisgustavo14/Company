@@ -24,6 +24,7 @@ public class ValidEmployee implements ConstraintValidator<IValidEmployee, Employ
     @Override
     public boolean isValid(final EmployeeRequest employeeRequest, final ConstraintValidatorContext context) {
         log.info("Validating employee");
+
         boolean valid = validOne(employeeRequest, context);
 
         if (!validTwo(employeeRequest, context)) {
