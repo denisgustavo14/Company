@@ -7,6 +7,9 @@ import com.examen.company.shared.enums.ErrorCodes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,6 +26,14 @@ public class CompanyExceptionHandler {
         companyError.setErrorCode(e.getErrorCode());
         companyError.setMessage(e.getMessage());
         return ResponseEntity.status(e.getHttpStatus()).body(companyError);
+    }
+
+    @ExceptionHandler({InternalAuthenticationServiceException.class, AuthenticationException.class})
+    public ResponseEntity<CompanyError> autenticationException(InternalAuthenticationServiceException e) {
+        CompanyError companyError = new CompanyError();
+        companyError.setErrorCode("401");
+        companyError.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(companyError);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

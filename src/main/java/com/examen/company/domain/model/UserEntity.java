@@ -1,17 +1,19 @@
 package com.examen.company.domain.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class UserEntity {
 
     @Id
@@ -24,4 +26,7 @@ public class UserEntity {
     private boolean locked;
 
     private boolean disabled;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserRole> roles;
 }
