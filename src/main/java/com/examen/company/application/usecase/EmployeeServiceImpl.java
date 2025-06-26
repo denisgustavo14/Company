@@ -5,6 +5,7 @@ import com.examen.company.application.port.out.EmployeeRepository;
 import com.examen.company.infraestructure.web.dto.EmployeeRequest;
 import com.examen.company.infraestructure.web.dto.EmployeeResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeePort {
         return employeeRepository.getAllEmployees();
     }
 
+    @Secured("ROLE_ADMIN") //control mediante reglas de negocio, en este caso solo el admin puede eliminar
     @Override
     public void deleteEmployeeById(final Long id) {
         employeeRepository.deleteEmployeeById(id);

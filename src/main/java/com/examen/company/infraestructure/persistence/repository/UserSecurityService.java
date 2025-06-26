@@ -7,11 +7,16 @@ import com.examen.company.shared.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Profile("prod")
@@ -29,9 +34,30 @@ public class UserSecurityService implements UserDetailsService {
         return User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .roles(roles)
+                .authorities(this.grantedAuthorities(roles))
                 .accountLocked(user.isLocked())
                 .disabled(user.isDisabled())
                 .build();
+    }
+
+    private String[] getAuthoritiesForRole(String role) {
+        if ("ADMIN".equals(role)) {
+            return new String[]{"update_employee"};
+        }
+        return new String[]{};
+    }
+
+    private List<GrantedAuthority> grantedAuthorities(String[] roles) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+
+            for (String authority : getAuthoritiesForRole(role)) {
+                authorities.add(new SimpleGrantedAuthority(authority));
+            }
+        }
+
+        return authorities;
     }
 }
