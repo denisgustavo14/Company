@@ -39,7 +39,7 @@ public class SecurityDevConfig {
     @Bean
     public UserDetailsService memoryUsers() { //sirve para crear usuarios en memoria (sin usar db), util: pruebas unitarias, demos, implementando Basic Auth
         UserDetails admin = User.builder()
-                .username("admin")
+                .username("denis19")
                 .password("{noop}admin") //{noop} es para no configurar el bean de la interface passwordEncoder
                 .roles("ADMIN")
                 .build();
